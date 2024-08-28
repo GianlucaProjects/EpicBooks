@@ -3,16 +3,14 @@ import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function LoginForm({ onLogin }) {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    console.log("Attempting to login with:", email, password); // Verifica che questi log vengano stampati
-  
+
     try {
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
@@ -21,25 +19,21 @@ function LoginForm({ onLogin }) {
         },
         body: JSON.stringify({ email, password }),
       });
-  
-      console.log("Response status:", response.status); // Verifica lo stato della risposta
-  
+
       if (response.ok) {
         const data = await response.json();
-        console.log("Login successful, received JWT:", data.jwt);
-        localStorage.setItem("token", data.jwt);
-        onLogin(true);
-        navigate("/");
+        console.log("JWT received from server:", data.jwt); // Debugging: mostra il token JWT
+        localStorage.setItem("token", data.jwt);  // Salva il token JWT nel localStorage
+        onLogin(true);  // Aggiorna lo stato di autenticazione
+        navigate("/");  // Reindirizza alla home page
       } else {
-        console.log("Login failed with status:", response.status); // Verifica lo stato della risposta quando il login fallisce
-        setLoginError(true);
+        setLoginError("Credenziali non valide!");
       }
     } catch (error) {
       console.error("Errore durante il login:", error);
-      setLoginError(true);
+      setLoginError("Errore di rete. Impossibile connettersi al server.");
     }
   };
-  
 
   return (
     <Container className="d-flex flex-column align-items-center my-5">
@@ -48,7 +42,7 @@ function LoginForm({ onLogin }) {
           <h4>Fai ora il login per poter accedere al sito!</h4>
           {loginError && (
             <Alert variant="danger" className="mt-3">
-              Credenziali non corrette. Riprova!
+              {loginError}
             </Alert>
           )}
         </Col>

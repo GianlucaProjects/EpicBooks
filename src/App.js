@@ -14,7 +14,12 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsLogged(!!token); // Imposta isLogged a true se il token è presente, altrimenti false
+    console.log("Token in localStorage:", token); // Debugging: mostra il token JWT trovato
+    if (token) {
+      setIsLogged(true);
+    } else {
+      setIsLogged(false);
+    }
   }, []);
 
   const handleLogout = () => {
@@ -40,7 +45,7 @@ function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={isLogged ? <HomeComponent /> : <Navigate to="/login" />} />
+          <Route path="/" element={isLogged ? <HomeComponent isLogged={isLogged} /> : <Navigate to="/login" />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={isLogged ? <Navigate to="/" /> : <LoginForm onLogin={handleLogin} />} />
           <Route path="/addBook" element={isLogged ? <AddBook onUpdate={updateBooksList} /> : <Navigate to="/login" />} />
