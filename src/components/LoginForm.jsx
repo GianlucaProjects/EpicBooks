@@ -22,8 +22,9 @@ function LoginForm({ onLogin }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("JWT received from server:", data.jwt); // Debugging: mostra il token JWT
+        console.log("JWT and username received from server:", data); // Debugging: mostra i dati ricevuti
         localStorage.setItem("token", data.jwt);  // Salva il token JWT nel localStorage
+        localStorage.setItem("username", data.username);  // Salva l'username nel localStorage
         onLogin(true);  // Aggiorna lo stato di autenticazione
         navigate("/");  // Reindirizza alla home page
       } else {
