@@ -1,24 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import MyNavbar from "./components/MyNavbar";
+import HomeComponent from "./components/HomeComponent";
+import AddBook from "./components/AddBook";
+import BooksList from "./components/BooksList";
+import LoginForm from "./components/LoginForm";
+import SignupForm from "./components/SignupForm";
 
 function App() {
+  const [booksList, setBooksList] = useState({ book: [] });
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLogged(!!token); // Imposta isLogged a true se il token è presente, altrimenti false
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLogged(false);
+  };
+
+  const handleLogin = (status) => {
+    setIsLogged(status);
+  };
+
+  const updateBooksList = (newBook) => {
+    setBooksList((prevBooksList) => ({
+      ...prevBooksList,
+      book: [...prevBooksList.book, newBook],
+    }));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <BrowserRouter>
+      <header>
+        <MyNavbar onLogout={handleLogout} isLogged={isLogged} />
       </header>
-    </div>
+      <main>
+        <Routes>
+          <Route path="/" element={isLogged ? <HomeComponent /> : <Navigate to="/login" />} />
+          <Route path="/signup" element={<SignupForm />} />
+          <Route path="/login" element={isLogged ? <Navigate to="/" /> : <LoginForm onLogin={handleLogin} />} />
+          <Route path="/addBook" element={isLogged ? <AddBook onUpdate={updateBooksList} /> : <Navigate to="/login" />} />
+          <Route path="/bookList" element={isLogged ? <BooksList booksList={booksList} /> : <Navigate to="/login" />} />
+        </Routes>
+      </main>
+    </BrowserRouter>
   );
 }
 
