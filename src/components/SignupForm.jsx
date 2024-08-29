@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");  // Stato per l'username
+  const [username, setUsername] = useState("");
   const [signupError, setSignupError] = useState("");
   const navigate = useNavigate();
 
@@ -18,14 +18,14 @@ function SignupForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, username }),  // Invia l'username insieme a email e password
+        body: JSON.stringify({ email, password, username }),
       });
 
       if (response.ok) {
         navigate("/login");  // Reindirizza al login dopo la registrazione
       } else {
         const errorText = await response.text();
-        setSignupError(errorText);
+        setSignupError(errorText);  // Mostra il messaggio di errore
       }
     } catch (error) {
       console.error("Errore durante la registrazione:", error);

@@ -2,8 +2,8 @@ import React from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function MyNavbar({ onLogout, isLogged }) {
-  const username = localStorage.getItem("username"); // Recupera l'username dal localStorage
+function MyNavbar({ onLogout, isLogged, userRole }) {
+  const username = localStorage.getItem("username");
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -25,6 +25,11 @@ function MyNavbar({ onLogout, isLogged }) {
                 <Nav.Link as={Link} to="/bookList">
                   Lista Libri
                 </Nav.Link>
+                {userRole === "ADMIN" && (
+                  <Nav.Link as={Link} to="/admin">
+                    Admin Panel
+                  </Nav.Link>
+                )}
               </>
             )}
           </Nav>
